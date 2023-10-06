@@ -1,0 +1,23 @@
+server:
+  servlet:
+    context-path: /content
+  port: 63040
+# Microservice configuration
+spring:
+  application:
+    name: content-api
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.101.65:3306/bc_content148?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: mysql
+# Log file configuration path
+logging:
+  config: classpath:log4j2-dev.xml
+
+swagger:
+  title: "insightBC Content Management System"
+  description: "The content system management system manages course-related information."
+  base-package: com.proj.content
+  enabled: true
+  version: 1.0.0
