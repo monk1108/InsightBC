@@ -1,4 +1,4 @@
-package com.proj.content;
+package com.proj.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,38 +7,30 @@ import com.proj.base.model.PageResult;
 import com.proj.content.mapper.CourseBaseMapper;
 import com.proj.content.model.dto.QueryCourseParamsDto;
 import com.proj.content.model.po.CourseBase;
+import com.proj.content.service.CourseBaseInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * @Description:
+ * @Description: Course Basic Information Management Class
  * @Author: Yinuo
- * @Date: 2023/10/6 0:20
+ * @Date: 2023/10/6 14:10
  */
 
-@SpringBootTest
-class CourseBaseMapperTests {
-
+@Service
+@Slf4j
+public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     @Autowired
     CourseBaseMapper courseBaseMapper;
 
-    @Test
-    void testCourseBaseMapper() {
-        CourseBase courseBase = courseBaseMapper.selectById(18L);
-        Assertions.assertNotNull(courseBase);
-
-        // Test query interface
+    @Override
+    public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
         LambdaQueryWrapper<CourseBase> queryWrapper = new LambdaQueryWrapper<>();
-        // Query conditions
-        QueryCourseParamsDto queryCourseParamsDto = new QueryCourseParamsDto();
-        queryCourseParamsDto.setCourseName("java");
-        queryCourseParamsDto.setAuditStatus("202004");
-        queryCourseParamsDto.setPublishStatus("203001");
+
 
         // Splicing query conditions
         // Fuzzy query based on course name  name like '%name%'
@@ -50,11 +42,7 @@ class CourseBaseMapperTests {
         // Based on course review status
         queryWrapper.eq(StringUtils.isNotEmpty(queryCourseParamsDto.getAuditStatus()), CourseBase::getAuditStatus, queryCourseParamsDto.getAuditStatus());
 
-
-        // Paging parameters
-        PageParams pageParams = new PageParams();
-        pageParams.setPageNo(1L);//页码
-        pageParams.setPageSize(3L);//每页记录数
+        queryWrapper.eq(StringUtils.isNotEmpty(queryCourseParamsDto.getPublishStatus()), CourseBase::getStatus, queryCourseParamsDto.getPublishStatus());
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
 
         // Paging queryE page paging parameters, @Param("ew") Wrapper<T> queryWrapper
@@ -69,6 +57,6 @@ class CourseBaseMapperTests {
         // List<T> items, long counts, long page, long pageSize
         PageResult<CourseBase> courseBasePageResult = new PageResult<>(items, total, pageParams.getPageNo(), pageParams.getPageSize());
         System.out.println(courseBasePageResult);
+        return courseBasePageResult;
     }
-
 }
