@@ -1,5 +1,6 @@
 package com.proj.content.model.dto;
 
+import com.proj.base.exception.ValidationGroups;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +18,8 @@ import java.math.BigDecimal;
 @ApiModel(value="AddCourseDto", description="Add course basic info")
 public class AddCourseDto {
 
- @NotEmpty(message = "Course name cannot be blank")
+ @NotEmpty(message = "Course name cannot be blank when adding a course", groups = ValidationGroups.Insert.class)
+ @NotEmpty(message = "Course name cannot be blank when updating a course", groups = ValidationGroups.Update.class)
  @ApiModelProperty(value = "Course name", required = true)
  private String name;
 
@@ -45,6 +47,7 @@ public class AddCourseDto {
  private String teachmode;
 
  @ApiModelProperty(value = "Course introduction")
+ @Size(message = "Course introduction too short",min = 10)
  private String description;
 
  @ApiModelProperty(value = "Course image", required = true)

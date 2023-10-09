@@ -79,41 +79,41 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     @Override
     public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto dto) {
         //合法性校验
-        if (StringUtils.isBlank(dto.getName())) {
-//            throw new RuntimeException("Course name is empty!");
-            ProjException.cast("Course name is empty!");
-        }
-
-
-        if (StringUtils.isBlank(dto.getMt())) {
-//            throw new RuntimeException("Course category is empty!");
-            ProjException.cast("Course category is empty!");
-        }
-
-        if (StringUtils.isBlank(dto.getSt())) {
-//            throw new RuntimeException("Course category is empty!");
-            ProjException.cast("Course category is empty!");
-        }
-
-        if (StringUtils.isBlank(dto.getGrade())) {
-//            throw new RuntimeException("Course level is empty!");
-            ProjException.cast("Course level is empty!");
-        }
-
-        if (StringUtils.isBlank(dto.getTeachmode())) {
-//            throw new RuntimeException("Education mode is empty!");
-            ProjException.cast("Education mode is empty!");
-        }
-
-        if (StringUtils.isBlank(dto.getUsers())) {
-//            throw new RuntimeException("Adaptation user is empty!");
-            ProjException.cast("Adaptation user is empty!");
-        }
-
-        if (StringUtils.isBlank(dto.getCharge())) {
-//            throw new RuntimeException("Charging rules are empty!");
-            ProjException.cast("Charging rules are empty!");
-        }
+//        if (StringUtils.isBlank(dto.getName())) {
+////            throw new RuntimeException("Course name is empty!");
+//            ProjException.cast("Course name is empty!");
+//        }
+//
+//
+//        if (StringUtils.isBlank(dto.getMt())) {
+////            throw new RuntimeException("Course category is empty!");
+//            ProjException.cast("Course category is empty!");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getSt())) {
+////            throw new RuntimeException("Course category is empty!");
+//            ProjException.cast("Course category is empty!");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getGrade())) {
+////            throw new RuntimeException("Course level is empty!");
+//            ProjException.cast("Course level is empty!");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getTeachmode())) {
+////            throw new RuntimeException("Education mode is empty!");
+//            ProjException.cast("Education mode is empty!");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getUsers())) {
+////            throw new RuntimeException("Adaptation user is empty!");
+//            ProjException.cast("Adaptation user is empty!");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getCharge())) {
+////            throw new RuntimeException("Charging rules are empty!");
+//            ProjException.cast("Charging rules are empty!");
+//        }
         //新增对象
         CourseBase courseBaseNew = new CourseBase();
         //将填写的课程信息赋值给新增对象
