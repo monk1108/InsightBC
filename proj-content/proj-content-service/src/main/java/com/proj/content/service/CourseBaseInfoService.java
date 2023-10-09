@@ -2,6 +2,8 @@ package com.proj.content.service;
 
 import com.proj.base.model.PageParams;
 import com.proj.base.model.PageResult;
+import com.proj.content.model.dto.AddCourseDto;
+import com.proj.content.model.dto.CourseBaseInfoDto;
 import com.proj.content.model.dto.QueryCourseParamsDto;
 import com.proj.content.model.po.CourseBase;
 
@@ -20,4 +22,14 @@ public interface CourseBaseInfoService {
      * @date 2023/10/6 14:31:26
      */
     PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
+
+    /**
+     * @description Add course basic info
+            * @param companyId 
+     * @param addCourseDto 
+            * @return com.proj.content.model.dto.CourseBaseInfoDto
+            * @author Yinuo Yao
+            * @date 2023/10/8 17:16:13
+            */
+    CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto);
 }

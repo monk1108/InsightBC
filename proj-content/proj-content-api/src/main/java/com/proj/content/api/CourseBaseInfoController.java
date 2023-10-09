@@ -2,6 +2,8 @@ package com.proj.content.api;
 
 import com.proj.base.model.PageParams;
 import com.proj.base.model.PageResult;
+import com.proj.content.model.dto.AddCourseDto;
+import com.proj.content.model.dto.CourseBaseInfoDto;
 import com.proj.content.model.dto.QueryCourseParamsDto;
 import com.proj.content.model.po.CourseBase;
 import com.proj.content.service.CourseBaseInfoService;
@@ -36,6 +38,13 @@ public class CourseBaseInfoController {
 
         return courseBasePageResult;
 
+    }
+
+    @ApiOperation("Add basic course information")
+    @PostMapping("/course")
+    public CourseBaseInfoDto createCourseBase(@RequestBody AddCourseDto addCourseDto){
+        Long companyId = 1232141425L;
+        return courseBaseInfoService.createCourseBase(companyId,addCourseDto);
     }
 
 }

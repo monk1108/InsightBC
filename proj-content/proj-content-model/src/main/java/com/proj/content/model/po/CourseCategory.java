@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 课程分类
+ * Course category
  * </p>
  *
  * @author itcast
@@ -19,37 +19,37 @@ public class CourseCategory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主键
+     * Primary Key
      */
     private String id;
 
     /**
-     * 分类名称
+     * Category Name
      */
     private String name;
 
     /**
-     * 分类标签默认和名称一样
+     * category label is the same as name by default
      */
     private String label;
 
     /**
-     * 父结点id（第一级的父节点是0，自关联字段id）
+     * Parent node id
      */
     private String parentid;
 
     /**
-     * 是否显示
+     * display or not
      */
     private Integer isShow;
 
     /**
-     * 排序字段
+     * sort field
      */
     private Integer orderby;
 
     /**
-     * 是否叶子
+     * whether is leaf node
      */
     private Integer isLeaf;
 
