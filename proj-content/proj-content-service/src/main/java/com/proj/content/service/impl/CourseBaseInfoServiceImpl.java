@@ -10,6 +10,7 @@ import com.proj.content.mapper.CourseCategoryMapper;
 import com.proj.content.mapper.CourseMarketMapper;
 import com.proj.content.model.dto.AddCourseDto;
 import com.proj.content.model.dto.CourseBaseInfoDto;
+import com.proj.content.model.dto.EditCourseDto;
 import com.proj.content.model.dto.QueryCourseParamsDto;
 import com.proj.content.model.po.CourseBase;
 import com.proj.content.model.po.CourseCategory;
@@ -175,7 +176,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     }
 
     // Query the basic information of the course based on the course ID, including basic information and marketing information
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId){
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId){
 
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase == null){
@@ -196,5 +197,37 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         return courseBaseInfoDto;
 
+    }
+
+    @Transactional
+    @Override
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto) {
+
+        // course Id
+        Long courseId = dto.getId();
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if(courseBase == null){
+            ProjException.cast("Course does not exist");
+        }
+
+        // Verify that this institution can only modify courses of this institution
+        if(!courseBase.getCompanyId().equals(companyId)){
+            ProjException.cast("The institution can only modify courses of this institution");
+        }
+
+        // Encapsulate basic information data
+        BeanUtils.copyProperties(dto,courseBase);
+        courseBase.setChangeDate(LocalDateTime.now());
+
+        // update course basic information
+        int i = courseBaseMapper.updateById(courseBase);
+
+        // update course market information
+        CourseMarket courseMarket = new CourseMarket();
+        BeanUtils.copyProperties(dto,courseMarket);
+        saveCourseMarket(courseMarket);
+        // Query course basic information and marketing information and return
+        CourseBaseInfoDto courseBaseInfo = this.getCourseBaseInfo(courseId);
+        return courseBaseInfo;
     }
 }

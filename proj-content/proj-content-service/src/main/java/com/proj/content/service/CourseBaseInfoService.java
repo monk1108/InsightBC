@@ -4,6 +4,7 @@ import com.proj.base.model.PageParams;
 import com.proj.base.model.PageResult;
 import com.proj.content.model.dto.AddCourseDto;
 import com.proj.content.model.dto.CourseBaseInfoDto;
+import com.proj.content.model.dto.EditCourseDto;
 import com.proj.content.model.dto.QueryCourseParamsDto;
 import com.proj.content.model.po.CourseBase;
 
@@ -32,4 +33,23 @@ public interface CourseBaseInfoService {
             * @date 2023/10/8 17:16:13
             */
     CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto);
+
+    /**
+     * @description Query the basic information of the course based on the course ID
+            * @param courseId
+            * @return com.proj.content.model.dto.CourseBaseInfoDto
+            * @author Yinuo Yao
+            * @date 2023/10/9 16:21:31
+            */
+    CourseBaseInfoDto getCourseBaseInfo(Long courseId);
+
+    /**
+     * @description Edit course info
+            * @param companyId
+     * @param editCourseDto
+            * @return com.proj.content.model.dto.CourseBaseInfoDto
+            * @author Yinuo Yao
+            * @date 2023/10/9 16:54:17
+            */
+    CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto);
 }

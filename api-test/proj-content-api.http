@@ -34,3 +34,8 @@ Content-Type: application/json
   "grade": "204001",
   "description": ""
 }
+
+### Get course info by id
+GET {{content_host}}/content/course/18
+Content-Type: application/json
+
