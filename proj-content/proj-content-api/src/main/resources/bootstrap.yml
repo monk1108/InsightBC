@@ -1,23 +1,37 @@
-server:
-  servlet:
-    context-path: /content
-  port: 63040
 # Microservice configuration
 spring:
   application:
     name: content-api
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.101.65:3306/bc_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: mysql
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.101.65:3306/bc_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: mysql
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery:
+        namespace: dev
+        group: proj-project
+      config:
+        namespace: dev
+        group: proj-project
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: proj-project
+            refresh: true
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: proj-common
+            refresh: true
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: proj-common
+            refresh: true
+  profiles:
+    active: dev
 # Log file configuration path
-logging:
-  config: classpath:log4j2-dev.xml
 
-swagger:
-  title: "insightBC Content Management System"
-  description: "The content system management system manages course-related information."
-  base-package: com.proj.content
-  enabled: true
-  version: 1.0.0
+
+
