@@ -11,6 +11,7 @@ import com.proj.content.model.po.CourseBase;
 import com.proj.content.service.CourseBaseInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,12 @@ public class CourseBaseInfoController {
         Long companyId = 1232141425L;
         CourseBaseInfoDto courseBaseInfoDto = courseBaseInfoService.updateCourseBase(companyId, editCourseDto);
         return courseBaseInfoDto;
+    }
+
+    @DeleteMapping("/course/{courseId}")
+    @ApiOperation("Delete course information")
+    public void deleteCourseBase(@PathVariable Long courseId) {
+        Long companyId = 1232141425L;
+        courseBaseInfoService.deleteCourseBase(companyId, courseId);
     }
 }

@@ -5,16 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.proj.base.exception.ProjException;
 import com.proj.base.model.PageParams;
 import com.proj.base.model.PageResult;
-import com.proj.content.mapper.CourseBaseMapper;
-import com.proj.content.mapper.CourseCategoryMapper;
-import com.proj.content.mapper.CourseMarketMapper;
+import com.proj.content.mapper.*;
 import com.proj.content.model.dto.AddCourseDto;
 import com.proj.content.model.dto.CourseBaseInfoDto;
 import com.proj.content.model.dto.EditCourseDto;
 import com.proj.content.model.dto.QueryCourseParamsDto;
-import com.proj.content.model.po.CourseBase;
-import com.proj.content.model.po.CourseCategory;
-import com.proj.content.model.po.CourseMarket;
+import com.proj.content.model.po.*;
 import com.proj.content.service.CourseBaseInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +38,10 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     CourseMarketMapper courseMarketMapper;
     @Autowired
     CourseCategoryMapper courseCategoryMapper;
+    @Autowired
+    CourseTeacherMapper courseTeacherMapper;
+    @Autowired
+    TeachplanMapper teachplanMapper;
 
     @Override
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
@@ -229,5 +229,27 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         // Query course basic information and marketing information and return
         CourseBaseInfoDto courseBaseInfo = this.getCourseBaseInfo(courseId);
         return courseBaseInfo;
+    }
+
+    @Override
+    public void deleteCourseBase(Long companyId, Long courseId) {
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (!courseBase.getCompanyId().equals(companyId)) {
+            ProjException.cast("The institution can only delete courses of this institution");
+        }
+
+//        delete course market information
+        courseMarketMapper.deleteById(courseId);
+//        delete course teacher information
+        LambdaQueryWrapper<CourseTeacher> teacher_QueryWrapper = new LambdaQueryWrapper<>();
+        teacher_QueryWrapper.eq(CourseTeacher::getCourseId, courseId);
+        courseTeacherMapper.delete(teacher_QueryWrapper);
+//        delete course plan information
+        LambdaQueryWrapper<Teachplan> plan_QueryWrapper = new LambdaQueryWrapper<>();
+        plan_QueryWrapper.eq(Teachplan::getCourseId, courseId);
+        teachplanMapper.delete(plan_QueryWrapper);
+//        delete course basic information
+        courseBaseMapper.deleteById(courseId);
+
     }
 }
