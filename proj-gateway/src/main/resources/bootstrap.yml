@@ -1,0 +1,25 @@
+# Microservice configuration
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery:
+        namespace: dev
+        group: proj-project
+      config:
+        namespace: dev
+        group: proj-project
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: proj-common
+            refresh: true
+  profiles:
+    active: dev
+# Log file configuration path
+
+
+

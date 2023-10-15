@@ -1,5 +1,5 @@
 ### Course Info Query
-POST http://{{content_host}}/content/course/list?pageNo=1&pageSize=10
+POST http://{{gateway_host}}/content/course/list?pageNo=1&pageSize=10
 Content-Type: application/json
 
 {
