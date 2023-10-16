@@ -100,6 +100,8 @@ public class BigFileTest {
 
 //        check merge file integrity
         try (
+//                with this try-with-resources, fileInputStream and mergeFileStream (the resources defined in the brackets)
+//                will be closed automatically after the try block ends.
                 FileInputStream fileInputStream = new FileInputStream(originalFile);
                 FileInputStream mergeFileStream = new FileInputStream(mergeFile);
                 ) {
@@ -111,8 +113,6 @@ public class BigFileTest {
                 System.out.println("Merge Failure");
             }
         }
-
-
 
     }
 }
