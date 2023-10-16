@@ -42,3 +42,4 @@ Content-Type: application/json
 ### Query the lesson plan of a course
 GET {{content_host}}/content/teachplan/74/tree-nodes
 Content-Type: application/json
+

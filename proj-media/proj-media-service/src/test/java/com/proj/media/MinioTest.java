@@ -40,7 +40,7 @@ public class MinioTest {
                     .bucket("testbucket")
 //                    .object("test001.mp4")
                     .object("001/test001.mp4") // Add subdirectory
-                    .filename("F:\\mine\\learning\\java\\xuechengzaixian\\学成在线项目—资料\\day05 媒资管理 Nacos Gateway MinIO\\myvideo.mp4")
+                    .filename("F:\\mine\\learning\\java\\projzaixian\\学成在线项目—资料\\day05 媒资管理 Nacos Gateway MinIO\\myvideo.mp4")
                     .contentType(mimeType) // By default, the file content type is determined based on the extension, which can also be specified.
                     .build();
             minioClient.uploadObject(testbucket);
