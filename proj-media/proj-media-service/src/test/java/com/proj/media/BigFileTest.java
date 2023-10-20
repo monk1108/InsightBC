@@ -25,7 +25,7 @@ public class BigFileTest {
         }
 
 //        chunk size (1 Mb)
-        long chunkSize = 1024 * 1024 * 1;
+        long chunkSize = 1024 * 1024 * 5;
 //        chunk nums
         long chunkNum = (long) Math.ceil((double) originalFile.length() * 1.0/ chunkSize);
         System.out.println("Chunk Num: " + chunkNum);

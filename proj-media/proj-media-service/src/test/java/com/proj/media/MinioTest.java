@@ -2,10 +2,10 @@ package com.proj.media;
 
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.RemoveObjectArgs;
-import io.minio.UploadObjectArgs;
+import io.minio.*;
+import io.minio.errors.*;
+import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteObject;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -13,6 +13,12 @@ import org.springframework.http.MediaType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Description: Minio Test Class
@@ -75,6 +81,94 @@ public class MinioTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /***
+     * @description Upload Chunk File to minio
+            *
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/19 13:08:14
+            */
+    @Test
+    public void uploadChunk() {
+        String chunkFolderPath = "F:\\mine\\learning\\java\\xuechengzaixian\\chunk\\";
+        File chunkFolder = new File(chunkFolderPath);
+//        chunk files
+        File[] chunkFiles = chunkFolder.listFiles();
+
+//        upload chunk files to minio
+        for (int i = 0; i < chunkFiles.length; i++) {
+            try {
+                UploadObjectArgs uploadObjectArgs = UploadObjectArgs.builder()
+                        .bucket("testbucket")
+                        .object("chunk/" + i)
+                        .filename(chunkFiles[i].getAbsolutePath())
+                        .build();
+                minioClient.uploadObject(uploadObjectArgs);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * @description Merge chunk files in minio
+            *
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/19 13:15:54
+            */
+    @Test
+    public void testMerge() throws Exception {
+        List<ComposeSource> sources = Stream.iterate(0, i -> ++i)
+                .limit(3)
+                .map(i -> ComposeSource.builder()
+                        .bucket("testbucket")
+                        .object("chunk/".concat(Integer.toString(i)))
+                        .build())
+                .collect(Collectors.toList());
+
+//        set object name after merge
+        ComposeObjectArgs composeObjectArgs = ComposeObjectArgs.builder()
+                .bucket("testbucket")
+                .object("restored.mp4")
+                .sources(sources)
+                .build();
+
+        minioClient.composeObject(composeObjectArgs);
+    }
+
+    /**
+     * @description Delete chunk files in minio
+            *
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/19 13:32:58
+            */
+    @Test
+    public void testDeleteObjects() {
+        List<DeleteObject> deleteObjects = Stream.iterate(0, i -> ++i)
+                .limit(3)
+                .map(i -> new DeleteObject("chunk/".concat(Integer.toString(i))))
+                .collect(Collectors.toList());
+
+        RemoveObjectsArgs removeObjectArgs = RemoveObjectsArgs.builder()
+                .bucket("testbucket")
+                .objects(deleteObjects)
+                .build();
+
+        Iterable<Result<DeleteError>> results = minioClient.removeObjects(removeObjectArgs);
+        results.forEach(r -> {
+            try {
+                DeleteError error = r.get();
+                System.out.println(error.objectName() + " " + error.message());
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        });
+
     }
 }
 
