@@ -71,15 +71,6 @@ public class SampleXxlJob {
         System.out.println("shardIndex = " + shardIndex + ", shardTotal = " + shardTotal);
 
         XxlJobHelper.log("Paging parameters: Current Paging Indx = {}, Total Paging numbers = {}", shardIndex, shardTotal);
-//
-//        // 业务逻辑
-//        for (int i = 0; i < shardTotal; i++) {
-//            if (i == shardIndex) {
-//                XxlJobHelper.log("Page {}, Targeted page starts executing", i);
-//            } else {
-//                XxlJobHelper.log("Page {},  Dismiss", i);
-//            }
-//        }
 
     }
 

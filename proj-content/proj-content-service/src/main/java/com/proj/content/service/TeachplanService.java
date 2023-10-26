@@ -1,7 +1,9 @@
 package com.proj.content.service;
 
+import com.proj.content.model.dto.BindTeachplanMediaDto;
 import com.proj.content.model.dto.SaveTeachplanDto;
 import com.proj.content.model.dto.TeachplanDto;
+import com.proj.content.model.po.TeachplanMedia;
 
 import java.util.List;
 
@@ -48,4 +50,22 @@ public interface TeachplanService {
             */
     public void moveTeachPlan(String moveType, Long teachplanId);
 
+    /***
+     * @description binding media file and teach plan
+            * @param bindTeachplanMediaDto
+            * @return com.proj.content.model.po.TeachplanMedia
+            * @author Yinuo Yao
+            * @date 2023/10/25 14:45:40
+            */
+    public TeachplanMedia associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
+
+    /***
+     * @description unbinding media file and teach plan
+            * @param teachPlanId
+     * @param mediaId
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/25 15:16:18
+            */
+    public void unassociationMedia(Long teachPlanId, String mediaId);
 }

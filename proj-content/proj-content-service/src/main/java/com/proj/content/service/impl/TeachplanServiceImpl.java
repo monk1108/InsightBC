@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.proj.base.exception.ProjException;
 import com.proj.content.mapper.TeachplanMapper;
 import com.proj.content.mapper.TeachplanMediaMapper;
+import com.proj.content.model.dto.BindTeachplanMediaDto;
 import com.proj.content.model.dto.SaveTeachplanDto;
 import com.proj.content.model.dto.TeachplanDto;
 import com.proj.content.model.po.Teachplan;
@@ -146,6 +147,45 @@ public class TeachplanServiceImpl implements TeachplanService {
         }
 
 
+    }
+
+    @Transactional
+    @Override
+    public TeachplanMedia associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto) {
+//        teach plan id
+        Long teachplanId = bindTeachplanMediaDto.getTeachplanId();
+        Teachplan teachplan = teachplanMapper.selectById(teachplanId);
+        if(teachplan==null){
+            ProjException.cast("No such teach plan!");
+        }
+        Integer grade = teachplan.getGrade();
+        if(grade!=2){
+            ProjException.cast("Only 2nd level course plan can bind media file");
+        }
+
+        Long courseId = teachplan.getCourseId();
+
+//        delete previouly binded media file
+        int delete = teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>()
+                .eq(TeachplanMedia::getTeachplanId, teachplanId));
+
+//        bind new media file
+        TeachplanMedia teachplanMedia = new TeachplanMedia();
+        BeanUtils.copyProperties(bindTeachplanMediaDto, teachplanMedia);
+        teachplanMedia.setCourseId(courseId);
+        teachplanMedia.setCreateDate(LocalDateTime.now());
+        teachplanMedia.setMediaFilename(bindTeachplanMediaDto.getFileName());
+        teachplanMediaMapper.insert(teachplanMedia);
+
+        return teachplanMedia;
+    }
+
+    @Override
+    public void unassociationMedia(Long teachPlanId, String mediaId) {
+        LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TeachplanMedia::getTeachplanId, teachPlanId)
+                .eq(TeachplanMedia::getMediaId, mediaId);
+        teachplanMediaMapper.delete(queryWrapper);
     }
 
     public void exchangeOrderBy(Teachplan a, Teachplan b) {

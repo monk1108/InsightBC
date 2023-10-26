@@ -1,5 +1,6 @@
 package com.proj.content.api;
 
+import com.proj.content.model.dto.BindTeachplanMediaDto;
 import com.proj.content.model.dto.SaveTeachplanDto;
 import com.proj.content.model.dto.TeachplanDto;
 import com.proj.content.service.TeachplanService;
@@ -45,5 +46,17 @@ public class TeachplanController {
     @PostMapping("/teachplan/{moveType}/{teachplanId}")
     public void moveTeachPlan(@PathVariable String moveType, @PathVariable Long teachplanId) {
         teachplanService.moveTeachPlan(moveType, teachplanId);
+    }
+
+    @ApiOperation(value = "binding media file and teach plan")
+    @PostMapping("/teachplan/association/media")
+    public void associationMedia(@RequestBody BindTeachplanMediaDto bindTeachplanMediaDto){
+        teachplanService.associationMedia(bindTeachplanMediaDto);
+    }
+
+    @ApiOperation(value = "unassociate media and teach plan")
+    @DeleteMapping("/teachplan/association/media/{teachplanId}/{mediaId}")
+    public void unassociationMedia(@PathVariable Long teachplanId, @PathVariable String mediaId) {
+        teachplanService.unassociationMedia(teachplanId, mediaId);
     }
 }
