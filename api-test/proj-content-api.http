@@ -43,3 +43,6 @@ Content-Type: application/json
 GET {{content_host}}/content/teachplan/74/tree-nodes
 Content-Type: application/json
 
+
+### Course publish
+POST {{content_host}}/content/coursepublish/25

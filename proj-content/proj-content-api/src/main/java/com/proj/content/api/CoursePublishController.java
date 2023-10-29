@@ -2,11 +2,14 @@ package com.proj.content.api;
 
 import com.proj.content.model.dto.CoursePreviewDto;
 import com.proj.content.service.CoursePublishService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @Author: Yinuo
  * @Date: 2023/10/26 17:13
  */
+@Api(value = "Course preview and publish interface",tags = "course preview and publish interface")
 @Controller
 public class CoursePublishController {
     @Autowired
@@ -35,4 +39,13 @@ public class CoursePublishController {
         Long companyId = 1232141425L;
         coursePublishService.commitAudit(companyId,courseId);
     }
+
+    @ApiOperation("Course publish")
+    @ResponseBody
+    @PostMapping("/coursepublish/{courseId}")
+    public void coursepublish(@PathVariable("courseId") Long courseId){
+        Long companyId = 1232141425L;
+        coursePublishService.publish(companyId, courseId);
+    }
+
 }

@@ -1,20 +1,21 @@
 package com.proj.content.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.proj.base.exception.CommonError;
 import com.proj.base.exception.ProjException;
-import com.proj.content.mapper.CourseBaseMapper;
-import com.proj.content.mapper.CourseMarketMapper;
-import com.proj.content.mapper.CoursePublishPreMapper;
-import com.proj.content.mapper.CourseTeacherMapper;
+import com.proj.content.mapper.*;
 import com.proj.content.model.dto.CourseBaseInfoDto;
 import com.proj.content.model.dto.CoursePreviewDto;
 import com.proj.content.model.dto.TeachplanDto;
 import com.proj.content.model.po.CourseBase;
 import com.proj.content.model.po.CourseMarket;
+import com.proj.content.model.po.CoursePublish;
 import com.proj.content.model.po.CoursePublishPre;
 import com.proj.content.service.CourseBaseInfoService;
 import com.proj.content.service.CoursePublishService;
 import com.proj.content.service.TeachplanService;
+import com.proj.messagesdk.model.po.MqMessage;
+import com.proj.messagesdk.service.MqMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -48,6 +49,12 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     @Autowired
     CoursePublishPreMapper coursePublishPreMapper;
+
+    @Autowired
+    CoursePublishMapper coursePublishMapper;
+
+    @Autowired
+    MqMessageService mqMessageService;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -116,5 +123,79 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         courseBase.setAuditStatus("202003");
         courseBaseMapper.updateById(courseBase);
 
+    }
+
+    @Transactional
+    @Override
+    public void publish(Long companyId, Long courseId) {
+//        course info in course pre-publish table
+        CoursePublishPre coursePublishPre = coursePublishPreMapper.selectById(courseId);
+        if (coursePublishPre == null) {
+            ProjException.cast("Please submit ther course for audit first, after that course can be published!");
+        }
+//       one institute can only publish the course owned by itself
+        if (!companyId.equals(coursePublishPre.getCompanyId())) {
+            ProjException.cast("You are not authorized to publish other institutions' course.");
+        }
+
+//        course audit status
+        String auditStatus = coursePublishPre.getStatus();
+//        only courses that have been approved can be published
+        if (!"202004".equals(auditStatus)) {
+            ProjException.cast("Only courses that have been approved can be published!");
+        }
+        
+//        save course publish info to course publish table
+        saveCoursePublish(courseId);
+
+//        save message queue table
+        saveCoursePublishMessage(courseId);
+
+//        delete course pre-publish info
+        coursePublishPreMapper.deleteById(courseId);
+    }
+
+    /**
+     * @description save course publish info to course publish table
+            * @param courseId
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/27 01:34:57
+            */
+    private void saveCoursePublish(Long courseId) {
+        CoursePublishPre coursePublishPre = coursePublishPreMapper.selectById(courseId);
+        if (coursePublishPre == null) {
+            ProjException.cast("Please submit ther course for audit first, after that course can be published!");
+        }
+
+//        dto that's to be written into course publish table
+        CoursePublish coursePublish = new CoursePublish();
+        BeanUtils.copyProperties(coursePublishPre, coursePublish);
+        coursePublish.setStatus("203002");
+        CoursePublish coursePublishUpdate = coursePublishMapper.selectById(courseId);
+        if (coursePublishUpdate == null) {
+            coursePublishMapper.insert(coursePublish);
+        } else {
+            coursePublishMapper.updateById(coursePublish);
+        }
+
+//        update course info in course base table
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        courseBase.setStatus("203002");
+        courseBaseMapper.updateById(courseBase);
+    }
+
+    /**
+     * @description save course info into message queue table
+            * @param courseId
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/27 01:35:04
+            */
+    private void saveCoursePublishMessage(Long courseId) {
+        MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
+        if (mqMessage == null) {
+            ProjException.cast(CommonError.UNKOWN_ERROR);
+        }
     }
 }

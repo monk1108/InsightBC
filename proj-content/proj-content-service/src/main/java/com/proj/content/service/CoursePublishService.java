@@ -27,4 +27,14 @@ public interface CoursePublishService {
             * @date 2023/10/26 22:07:46
             */
     public void commitAudit(Long companyId,Long courseId);
+
+    /**
+     * @description course publish interface
+            * @param companyId
+     * @param courseId
+            * @return void
+            * @author Yinuo Yao
+            * @date 2023/10/27 01:26:42
+            */
+    public void publish(Long companyId,Long courseId);
 }
